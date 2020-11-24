@@ -9,6 +9,7 @@ pipeline {
         // string(name: 'TEST_PARM', defaultValue: 'True', description: 'some test param')
         choice(name: 'SERVICE', choices: ['all', 'stremer', 'analyzer', 'notifier', 'publisher'], description: 'some choice param')
         booleanParam(name: 'BUILD', defaultValue: 'True', description: 'some test boolean param' )
+        booleanParam(name: 'DEPLOY', defaultValue: 'True', description: 'some test boolean param' )
     }
 
     stages {
