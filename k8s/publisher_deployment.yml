@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: publisher
-          image: yossie17/publisher:v1
+          image: <<set_by_jenkins>>
           resources:
             requests:
                cpu: 20m

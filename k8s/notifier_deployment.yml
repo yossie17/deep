@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: notifier
-          image: yossie17/notifier:v1
+          image: <<set_by_jenkins>>
           resources:
             requests:
                cpu: 20m

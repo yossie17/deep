@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: analyzer
-          image: yossie17/analyzer:v1
+          image: <<set_by_jenkins>>
           resources:
             requests:
                cpu: 20m
