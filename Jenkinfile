@@ -13,18 +13,19 @@ pipeline {
 
     stages {
 
-        stage('AWS-Credentials') {
-            steps {
-                sh 'hostname'
-                sh 'mkdir /root/.aws/'
-                sh 'envsubst  < credentials.template > /root/.aws/credentials'
-            }
-        }
+        // stage('AWS-Credentials') {
+        //     steps {
+        //         sh 'hostname'
+        //         sh 'mkdir /root/.aws/'
+        //         sh 'envsubst  < credentials.template > /root/.aws/credentials'
+        //     }
+        // }
         
         stage('Build and push tegstry') {
             steps {
                 //  ecr login
-                 sh 'aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 770255773224.dkr.ecr.eu-central-1.amazonaws.com'
+                //  sh 'aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 770255773224.dkr.ecr.eu-central-1.amazonaws.com'
+                 sh 'docker login --username yossie17 -p env.DOCKER_TOKEN'
 
                 script{                
                 if (env.BUILD == 'true') {
