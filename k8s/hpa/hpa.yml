@@ -1,0 +1,54 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: streamer-hpa
+spec:
+  maxReplicas: 5 # define max replica count
+  minReplicas: 2  # define min replica count
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: streamer
+  targetCPUUtilizationPercentage: 70 # target CPU utilization
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: analyzer-hpa
+spec:
+  maxReplicas: 5 # define max replica count
+  minReplicas: 2  # define min replica count
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: analyzer
+  targetCPUUtilizationPercentage: 70 # target CPU utilization
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: notifier-hpa
+spec:
+  maxReplicas: 5 # define max replica count
+  minReplicas: 2  # define min replica count
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: notifier
+  targetCPUUtilizationPercentage: 70 # target CPU utilization
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: publisher-hpa
+spec:
+  maxReplicas: 5 # define max replica count
+  minReplicas: 2  # define min replica count
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: publisher
+  targetCPUUtilizationPercentage: 70 # target CPU utilization

@@ -1,0 +1,85 @@
+pipeline {
+    
+    agent {
+        docker { image 'yossie17/terratorm:v4'}
+    }
+     parameters {
+        // string(name: 'TEST_PARM', defaultValue: 'True', description: 'some test param')
+        choice(name: 'SERVICE', choices: ['all', 'stremer', 'analyzer', 'notifier', 'publisher'], description: 'some choice param')
+        booleanParam(name: 'BUILD', defaultValue: 'True', description: 'some test boolean param' )
+    }
+    stages {
+        stage('AWS-Credentials') {
+            steps {
+                sh 'hostname'
+                sh 'mkdir /root/.aws/'
+                sh 'envsubst  < credentials.template > /root/.aws/credentials'
+            }
+        }
+        
+        stage('Build and push tegstry') {
+            steps {
+                //  ecr login
+                 sh 'aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 770255773224.dkr.ecr.eu-central-1.amazonaws.com'
+
+                script{                
+                if (env.BUILD == 'true') {
+
+                        if (env.SERVICE == 'stremer' || env.service == 'all') {
+                            sh "cd steremer && docker build --rm -f docker/Dockerfile -t yossie17/steremer:v${BUILD_NUMBER} ."
+                            sh "docker push yossie17/steremer:v${BUILD_NUMBER}"
+                        }
+                        
+                        if (env.SERVICE == 'analyzer' || env.service == 'all') {
+                            sh "cd analyzer && docker build --rm -f docker/Dockerfile -t yossie17/analyzer:v${BUILD_NUMBER} ."
+                            sh "docker push yossie17/analyzer:v${BUILD_NUMBER}"
+                        }
+                        
+                        if (env.SERVICE == 'notifier' || env.service == 'all') {
+                            sh "cd analyzer && docker build --rm -f docker/Dockerfile -t yossie17/notifier:v${BUILD_NUMBER} ."
+                            sh "docker push yossie17/notifier:v${BUILD_NUMBER}"
+                        }
+                        
+                        if (env.SERVICE == 'publisher' || env.service == 'all') {
+                            sh "cd publisher && docker build --rm -f docker/Dockerfile -t yossie17/publisher:v${BUILD_NUMBER} ."
+                            sh "docker push yossie17/publisher:v${BUILD_NUMBER}"
+                        }
+                }
+            }
+            
+        stage('Deploy to cluster') {
+            steps {
+                //   sync with eks cluster
+                sh 'aws eks --region eu-central-1 update-kubeconfig --name test-k8s'
+                 script{ 
+
+                  if (env.DEPLOY == 'true') {
+
+                         if (env.SERVICE == 'stremer' || env.service == 'all') {
+                            sh "sed -i 's#value: <<set_by_jenkins>>#value: ${BUILD_NUMBER}/#g' k8s/steremer_deployment.yml"
+                            sh "kubectl apply -f k8s/steremer_deployment.yml"
+                        }
+
+                         if (env.SERVICE == 'analyzer' || env.service == 'all') {
+                            sh "sed -i 's#value: <<set_by_jenkins>>#value: ${BUILD_NUMBER}/#g' k8s/analyzer_deployment.yml"
+                            sh "kubectl apply -f k8s/analyzer_deployment.yml"
+                        }
+
+                         if (env.SERVICE == 'notifier' || env.service == 'all') {
+                            sh "sed -i 's#value: <<set_by_jenkins>>#value: ${BUILD_NUMBER}/#g' k8s/notifier_deployment.yml"
+                            sh "kubectl apply -f k8s/notifier_deployment.yml"
+                        }
+
+                         if (env.SERVICE == 'publisher' || env.service == 'all') {
+                            sh "sed -i 's#value: <<set_by_jenkins>>#value: ${BUILD_NUMBER}/#g' k8s/publisher_deployment.yml"
+                            sh "kubectl apply -f k8s/publisher_deployment.yml"
+                        }
+
+                        
+            }
+                 }
+        }
+    }
+}
+
+

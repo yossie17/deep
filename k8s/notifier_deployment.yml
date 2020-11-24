@@ -1,0 +1,52 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: notifier
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+     app: notifier
+  template:
+    metadata:
+      labels:
+        app: notifier
+    spec:
+      containers:
+        - name: notifier
+          image: yossie17/notifier:v1
+          resources:
+            requests:
+               cpu: 20m
+          command: ["/bin/sh"]
+          args: ["-c", "python3 manage.py runserver 0.0.0.0:8000"]
+          ports:
+            - containerPort: 8000
+      imagePullSecrets:
+      - name: dockerhub-reg
+          
+
+
+
+ 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notifier
+spec:
+  ports:
+    - port: 8000
+      name: port8000
+  selector:
+    app: notifier
+
+
+
+

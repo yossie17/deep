@@ -1,0 +1,52 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: analyzer
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+     app: analyzer
+  template:
+    metadata:
+      labels:
+        app: analyzer
+    spec:
+      containers:
+        - name: analyzer
+          image: yossie17/analyzer:v1
+          resources:
+            requests:
+               cpu: 20m
+          command: ["/bin/sh"]
+          args: ["-c", "python3 manage.py runserver 0.0.0.0:8000"]
+          ports:
+            - containerPort: 8000
+      imagePullSecrets:
+      - name: dockerhub-reg
+          
+
+
+
+ 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: analyzer
+spec:
+  ports:
+    - port: 8000
+      name: port8000
+  selector:
+    app: analyzer
+
+
+
+

@@ -1,0 +1,73 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: streamer
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+     app: streamer
+  template:
+    metadata:
+      labels:
+        app: streamer
+    spec:
+      containers:
+        - name: streamer
+          image: yossie17/deep-steremer:v<<set_by_jenkins>>
+          resources:
+            requests:
+               cpu: 20m
+          command: ["/bin/sh"]
+          args: ["-c", "python3 manage.py runserver 0.0.0.0:8000"]
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+          - name: persistent-storage
+            mountPath: /db_data
+      volumes:
+        - name: persistent-storage
+          persistentVolumeClaim:
+           claimName: local-claim
+      imagePullSecrets:
+      - name: dockerhub-reg
+          
+
+
+
+ 
+---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: streamer
+# spec:
+#   ports:
+#     - port: 8000
+#       name: port8000
+#   selector:
+#     app: streamer
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamer
+  labels:
+    app: streamer
+spec:
+  ports:
+   - port: 8000
+     name: port8000
+  selector:
+    app: streamer
+  type: LoadBalancer
+
+
+
+
