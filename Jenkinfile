@@ -2,7 +2,7 @@ pipeline {
     
     agent {
         // docker { image 'yossie17/terratorm:v4'}
-        master
+        none
     }
 
      parameters {
