@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: streamer
-          image: yossie17/deep-steremer:v<<set_by_jenkins>>
+          image: <<set_by_jenkins>>
           resources:
             requests:
                cpu: 20m
