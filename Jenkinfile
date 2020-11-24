@@ -3,12 +3,15 @@ pipeline {
     agent {
         docker { image 'yossie17/terratorm:v4'}
     }
+
      parameters {
         // string(name: 'TEST_PARM', defaultValue: 'True', description: 'some test param')
         choice(name: 'SERVICE', choices: ['all', 'stremer', 'analyzer', 'notifier', 'publisher'], description: 'some choice param')
         booleanParam(name: 'BUILD', defaultValue: 'True', description: 'some test boolean param' )
     }
+
     stages {
+
         stage('AWS-Credentials') {
             steps {
                 sh 'hostname'
@@ -46,40 +49,46 @@ pipeline {
                         }
                 }
             }
+        }   
+    }
             
-        stage('Deploy to cluster') {
-            steps {
-                //   sync with eks cluster
-                sh 'aws eks --region eu-central-1 update-kubeconfig --name test-k8s'
-                 script{ 
+    //     stage('Deploy to cluster') {
+    //         steps {
+    //             //   sync with eks cluster
+    //             sh 'aws eks --region eu-central-1 update-kubeconfig --name test-k8s'
+    //              script{ 
 
-                  if (env.DEPLOY == 'true') {
+    //         //       if (env.DEPLOY == 'true') {
 
-                         if (env.SERVICE == 'stremer' || env.service == 'all') {
-                            sh "sed -i 's#value: <<set_by_jenkins>>#value: ${BUILD_NUMBER}/#g' k8s/steremer_deployment.yml"
-                            sh "kubectl apply -f k8s/steremer_deployment.yml"
-                        }
+    //         //              if (env.SERVICE == 'stremer' || env.service == 'all') {
+    //         //                 sh "sed -i 's#value: <<set_by_jenkins>>#value: ${BUILD_NUMBER}/#g' k8s/steremer_deployment.yml"
+    //         //                 sh "kubectl apply -f k8s/steremer_deployment.yml"
+    //         //             }
 
-                         if (env.SERVICE == 'analyzer' || env.service == 'all') {
-                            sh "sed -i 's#value: <<set_by_jenkins>>#value: ${BUILD_NUMBER}/#g' k8s/analyzer_deployment.yml"
-                            sh "kubectl apply -f k8s/analyzer_deployment.yml"
-                        }
+    //         //              if (env.SERVICE == 'analyzer' || env.service == 'all') {
+    //         //                 sh "sed -i 's#value: <<set_by_jenkins>>#value: ${BUILD_NUMBER}/#g' k8s/analyzer_deployment.yml"
+    //         //                 sh "kubectl apply -f k8s/analyzer_deployment.yml"
+    //         //             }
 
-                         if (env.SERVICE == 'notifier' || env.service == 'all') {
-                            sh "sed -i 's#value: <<set_by_jenkins>>#value: ${BUILD_NUMBER}/#g' k8s/notifier_deployment.yml"
-                            sh "kubectl apply -f k8s/notifier_deployment.yml"
-                        }
+    //         //              if (env.SERVICE == 'notifier' || env.service == 'all') {
+    //         //                 sh "sed -i 's#value: <<set_by_jenkins>>#value: ${BUILD_NUMBER}/#g' k8s/notifier_deployment.yml"
+    //         //                 sh "kubectl apply -f k8s/notifier_deployment.yml"
+    //         //             }
 
-                         if (env.SERVICE == 'publisher' || env.service == 'all') {
-                            sh "sed -i 's#value: <<set_by_jenkins>>#value: ${BUILD_NUMBER}/#g' k8s/publisher_deployment.yml"
-                            sh "kubectl apply -f k8s/publisher_deployment.yml"
-                        }
+    //         //              if (env.SERVICE == 'publisher' || env.service == 'all') {
+    //         //                 sh "sed -i 's#value: <<set_by_jenkins>>#value: ${BUILD_NUMBER}/#g' k8s/publisher_deployment.yml"
+    //         //                 sh "kubectl apply -f k8s/publisher_deployment.yml"
+    //         //             }
 
                         
-            }
-                 }
-        }
-    }
-}
+    //         // }
+    //              }
+    //     }
+    // }
+  
+    
+ } 
+}    
+
 
 
