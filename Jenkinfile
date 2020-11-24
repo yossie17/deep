@@ -1,9 +1,9 @@
 pipeline {
-    
-    agent {
-        // docker { image 'yossie17/terratorm:v4'}
-        none
-    }
+     
+     agent any
+    // agent {
+    //     docker { image 'yossie17/terratorm:v4'}
+    // }
 
      parameters {
         // string(name: 'TEST_PARM', defaultValue: 'True', description: 'some test param')
