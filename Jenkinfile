@@ -1,3 +1,4 @@
+def DOCKER_REG = ec2-18-192-65-76.eu-central-1.compute.amazonaws.com:5000
 pipeline {
      
      agent any
@@ -32,7 +33,7 @@ pipeline {
                 if (env.BUILD == 'true') {
 
                         if (env.SERVICE == 'stremer' || env.service == 'all') {
-                            sh "cd steremer && docker build --rm -f docker/Dockerfile -t ec2-18-192-65-76.eu-central-1.compute.amazonaws.com:5000/deep/steremer:v${BUILD_NUMBER} ."
+                            sh "cd steremer && docker build --rm -f docker/Dockerfile -t ${DOCKER_REG}/deep/steremer:v${BUILD_NUMBER} ."
                             sh "docker push yossie17/steremer:v${BUILD_NUMBER}"
                         }
                         
@@ -47,7 +48,7 @@ pipeline {
                         }
                         
                         if (env.SERVICE == 'publisher' || env.service == 'all') {
-                            sh "cd publisher && docker build --rm -f docker/Dockerfile -t ec2-18-192-65-76.eu-central-1.compute.amazonaws.com:5000/deep/publisher:v${BUILD_NUMBER} ."
+                            sh "cd publisher && docker build --rm -f docker/Dockerfile -t ec2-18-192-65-76.eu-central-1.compute.amazonaws.com:5000/deep/notifier:v${BUILD_NUMBER} ."
                             sh "docker push yossie17/publisher:v${BUILD_NUMBER}"
                         }
                 }
