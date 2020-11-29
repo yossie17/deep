@@ -85,23 +85,19 @@ pipeline {
 
                          if (env.SERVICE == 'stremer' || env.service == 'all') {
                              k8s_deploy("steremer", "steremer_deployment.yml")
-                            // sh "sed -i 's#image: <<set_by_jenkins>>#image: ${DOCKER_REG}/deep/${service_name}:v${BUILD_NUMBER}#g' k8s/steremer_deployment.yml"
-                            // sh "kubectl apply -f k8s/${deployment_file}"
                         }
 
                          if (env.SERVICE == 'analyzer' || env.service == 'all') {
-                            sh "sed -i 's#image: <<set_by_jenkins>>#image: yossie17/analyzer:v${BUILD_NUMBER}#g' k8s/analyzer_deployment.yml"
-                            sh "kubectl apply -f k8s/analyzer_deployment.yml"
+                            k8s_deploy("analyzer", "analyzer_deployment.yml")
                         }
 
                          if (env.SERVICE == 'notifier' || env.service == 'all') {
-                            sh "sed -i 's#image: <<set_by_jenkins>>#image: yossie17/notifier:v${BUILD_NUMBER}#g' k8s/notifier_deployment.yml"
-                            sh "kubectl apply -f k8s/notifier_deployment.yml"
+                            k8s_deploy("notifier", "notifier_deployment.yml")
                         }
 
                          if (env.SERVICE == 'publisher' || env.service == 'all') {
-                            sh "sed -i 's#image: <<set_by_jenkins>>#image: yossie17/publisher:v${BUILD_NUMBER}#g' k8s/publisher_deployment.yml"
-                            sh "kubectl apply -f k8s/publisher_deployment.yml"
+                            k8s_deploy("publisher", "publisher_deployment.yml")
+
                         }
     
                   }
