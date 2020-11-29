@@ -1,8 +1,15 @@
 def DOCKER_REG = "ec2-18-192-65-76.eu-central-1.compute.amazonaws.com:5000"
+
 def docker_build(service_name){
     def DOCKER_REG = "ec2-18-192-65-76.eu-central-1.compute.amazonaws.com:5000"
     sh "cd ${service_name} && docker build --rm -f docker/Dockerfile -t ${DOCKER_REG}/deep/${service_name}:v${BUILD_NUMBER} ."
     sh "docker push ${DOCKER_REG}/deep/${service_name}:v${BUILD_NUMBER}"
+}
+
+def k8s_deploy(service_name, deployment_file){
+    def DOCKER_REG = "ec2-18-192-65-76.eu-central-1.compute.amazonaws.com:5000"
+    sh "sed -i 's#image: <<set_by_jenkins>>#image: ${DOCKER_REG}/deep/${service_name}:v${BUILD_NUMBER}#g' k8s/${deployment_file}"
+    sh "kubectl apply -f k8s/${deployment_file}"
 }
 
 pipeline {
@@ -77,8 +84,9 @@ pipeline {
                   if (env.DEPLOY == 'true') {
 
                          if (env.SERVICE == 'stremer' || env.service == 'all') {
-                            sh "sed -i 's#image: <<set_by_jenkins>>#image: yossie17/steremer:v${BUILD_NUMBER}#g' k8s/steremer_deployment.yml"
-                            sh "kubectl apply -f k8s/steremer_deployment.yml"
+                             k8s_deploy("steremer", "steremer_deployment.yml")
+                            // sh "sed -i 's#image: <<set_by_jenkins>>#image: ${DOCKER_REG}/deep/${service_name}:v${BUILD_NUMBER}#g' k8s/steremer_deployment.yml"
+                            // sh "kubectl apply -f k8s/${deployment_file}"
                         }
 
                          if (env.SERVICE == 'analyzer' || env.service == 'all') {
