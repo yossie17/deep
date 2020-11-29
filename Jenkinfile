@@ -1,6 +1,10 @@
 def DOCKER_REG = "ec2-18-192-65-76.eu-central-1.compute.amazonaws.com:5000"
+// def docker_build()
+
 pipeline {
      
+
+ 
      agent any
     // agent {
     //     docker { image 'yossie17/terratorm:v4'}
@@ -34,22 +38,22 @@ pipeline {
 
                         if (env.SERVICE == 'stremer' || env.service == 'all') {
                             sh "cd steremer && docker build --rm -f docker/Dockerfile -t ${DOCKER_REG}/deep/steremer:v${BUILD_NUMBER} ."
-                            sh "docker push yossie17/steremer:v${BUILD_NUMBER}"
+                            sh "docker push ${DOCKER_REG}:v${BUILD_NUMBER}"
                         }
                         
                         if (env.SERVICE == 'analyzer' || env.service == 'all') {
-                            sh "cd analyzer && docker build --rm -f docker/Dockerfile -t ec2-18-192-65-76.eu-central-1.compute.amazonaws.com:5000/deep/analyzer:v${BUILD_NUMBER} ."
-                            sh "docker push yossie17/analyzer:v${BUILD_NUMBER}"
+                            sh "cd analyzer && docker build --rm -f docker/Dockerfile -t ${DOCKER_REG}/deep/analyzer:v${BUILD_NUMBER} ."
+                            sh "docker push ${DOCKER_REG}:v${BUILD_NUMBER}"
                         }
                         
                         if (env.SERVICE == 'notifier' || env.service == 'all') {
-                            sh "cd analyzer && docker build --rm -f docker/Dockerfile -t ec2-18-192-65-76.eu-central-1.compute.amazonaws.com:5000/deep/notifier:v${BUILD_NUMBER} ."
-                            sh "docker push yossie17/notifier:v${BUILD_NUMBER}"
+                            sh "cd analyzer && docker build --rm -f docker/Dockerfile -t ${DOCKER_REG}/deep/notifier:v${BUILD_NUMBER} ."
+                            sh "docker push ${DOCKER_REG}:v${BUILD_NUMBER}"
                         }
                         
                         if (env.SERVICE == 'publisher' || env.service == 'all') {
-                            sh "cd publisher && docker build --rm -f docker/Dockerfile -t ec2-18-192-65-76.eu-central-1.compute.amazonaws.com:5000/deep/notifier:v${BUILD_NUMBER} ."
-                            sh "docker push yossie17/publisher:v${BUILD_NUMBER}"
+                            sh "cd publisher && docker build --rm -f docker/Dockerfile -t ${DOCKER_REG}/deep/notifier:v${BUILD_NUMBER} ."
+                            sh "docker push ${DOCKER_REG}:v${BUILD_NUMBER}"
                         }
                 }
             }
