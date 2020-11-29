@@ -1,5 +1,6 @@
 def DOCKER_REG = "ec2-18-192-65-76.eu-central-1.compute.amazonaws.com:5000"
 def docker_build(service_name){
+    def DOCKER_REG = "ec2-18-192-65-76.eu-central-1.compute.amazonaws.com:5000"
     sh "cd ${service_name} && docker build --rm -f docker/Dockerfile -t ${DOCKER_REG}/deep/${service_name}:v${BUILD_NUMBER} ."
     sh "docker push ${DOCKER_REG}/deep/${service_name}:v${BUILD_NUMBER}"
 }
