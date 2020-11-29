@@ -1,5 +1,8 @@
 def DOCKER_REG = "ec2-18-192-65-76.eu-central-1.compute.amazonaws.com:5000"
-// def docker_build()
+def docker_build(service_name){
+    sh "cd ${service_name} && docker build --rm -f docker/Dockerfile -t ${DOCKER_REG}/deep/${service_name}:v${BUILD_NUMBER} ."
+    sh "docker push ${DOCKER_REG}/deep/${service_name}:v${BUILD_NUMBER}"
+}
 
 pipeline {
      
@@ -37,8 +40,9 @@ pipeline {
                 if (env.BUILD == 'true') {
 
                         if (env.SERVICE == 'stremer' || env.service == 'all') {
-                            sh "cd steremer && docker build --rm -f docker/Dockerfile -t ${DOCKER_REG}/deep/steremer:v${BUILD_NUMBER} ."
-                            sh "docker push ${DOCKER_REG}/deep/steremer:v${BUILD_NUMBER}"
+                            docker_build("steremer")
+                            // sh "cd steremer && docker build --rm -f docker/Dockerfile -t ${DOCKER_REG}/deep/steremer:v${BUILD_NUMBER} ."
+                            // sh "docker push ${DOCKER_REG}/deep/steremer:v${BUILD_NUMBER}"
                         }
                         
                         if (env.SERVICE == 'analyzer' || env.service == 'all') {
@@ -65,6 +69,13 @@ pipeline {
                 //   sync with eks cluster
                 // sh 'aws eks --region eu-central-1 update-kubeconfig --name test-k8s'
                  script{ 
+
+                    //  def services_list = ["steremer", "analyzer", "notifier", "publisher" ]
+                    //  while (env.DEPLOY == 'true'){
+
+
+                    
+                    //  }
 
                   if (env.DEPLOY == 'true') {
 
