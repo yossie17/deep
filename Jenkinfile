@@ -38,22 +38,22 @@ pipeline {
 
                         if (env.SERVICE == 'stremer' || env.service == 'all') {
                             sh "cd steremer && docker build --rm -f docker/Dockerfile -t ${DOCKER_REG}/deep/steremer:v${BUILD_NUMBER} ."
-                            sh "docker push ${DOCKER_REG}:v${BUILD_NUMBER}"
+                            sh "docker push ${DOCKER_REG}/deep/steremer:v${BUILD_NUMBER}"
                         }
                         
                         if (env.SERVICE == 'analyzer' || env.service == 'all') {
                             sh "cd analyzer && docker build --rm -f docker/Dockerfile -t ${DOCKER_REG}/deep/analyzer:v${BUILD_NUMBER} ."
-                            sh "docker push ${DOCKER_REG}:v${BUILD_NUMBER}"
+                            sh "docker push ${DOCKER_REG}/deep/analyzer:v${BUILD_NUMBER}"
                         }
                         
                         if (env.SERVICE == 'notifier' || env.service == 'all') {
                             sh "cd analyzer && docker build --rm -f docker/Dockerfile -t ${DOCKER_REG}/deep/notifier:v${BUILD_NUMBER} ."
-                            sh "docker push ${DOCKER_REG}:v${BUILD_NUMBER}"
+                            sh "docker push ${DOCKER_REG}/deep/notifier:v${BUILD_NUMBER}"
                         }
                         
                         if (env.SERVICE == 'publisher' || env.service == 'all') {
-                            sh "cd publisher && docker build --rm -f docker/Dockerfile -t ${DOCKER_REG}/deep/notifier:v${BUILD_NUMBER} ."
-                            sh "docker push ${DOCKER_REG}:v${BUILD_NUMBER}"
+                            sh "cd publisher && docker build --rm -f docker/Dockerfile -t ${DOCKER_REG}/deep/publisher:v${BUILD_NUMBER} ."
+                            sh "docker push ${DOCKER_REG}/deep/publisher:v${BUILD_NUMBER}"
                         }
                 }
             }
